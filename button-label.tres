@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://cuxh0cp02743o"]
+
+[ext_resource type="FontFile" uid="uid://kpi45yy8a68d" path="res://Fonts/Anta-Regular.ttf" id="1_2ub6y"]
+
+[resource]
+font = ExtResource("1_2ub6y")
+font_size = 36
+outline_color = Color(0, 0, 0, 1)

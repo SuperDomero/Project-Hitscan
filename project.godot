@@ -17,12 +17,19 @@ config/icon="res://icon.svg"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=4
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [editor]
 
 movie_writer/disable_vsync=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/sky_3d/plugin.cfg")
 
 [physics]
 
@@ -33,3 +40,5 @@ movie_writer/disable_vsync=true
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+viewport/hdr_2d=true
+anti_aliasing/quality/msaa_3d=3

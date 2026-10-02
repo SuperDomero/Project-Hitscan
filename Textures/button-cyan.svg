@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 443 91"
+   width="443"
+   height="91"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="button-cyan.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.9722222"
+     inkscape:cx="148.8169"
+     inkscape:cy="52.732395"
+     inkscape:window-width="1920"
+     inkscape:window-height="1018"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg11" />
+  <defs
+     id="defs7">
+    <!-- Base Red Fill Gradient -->
+    <linearGradient
+       id="btn-red-fill"
+       x1="3.072518"
+       y1="27.33914"
+       x2="3.072518"
+       y2="218.71312"
+       gradientTransform="matrix(2.2782617,0,0,0.43893115,-3.5,-8.5)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#e63946"
+         id="stop1"
+         style="stop-color:#39e6db;stop-opacity:1;" />
+      <stop
+         offset="0.5"
+         stop-color="#c9182b"
+         id="stop2"
+         style="stop-color:#18c98b;stop-opacity:1;" />
+      <stop
+         offset="1"
+         stop-color="#9d0208"
+         id="stop3"
+         style="stop-color:#029d91;stop-opacity:1;" />
+    </linearGradient>
+    <!-- Top Inset Bevel Highlight -->
+    <linearGradient
+       id="btn-top-highlight"
+       x1="2.7386128"
+       y1="46.008695"
+       x2="2.7386128"
+       y2="177.46211"
+       gradientTransform="matrix(3.2863353,0,0,0.30429031,-3.5,-8.5)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#ff758f"
+         stop-opacity="0.7"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#ff758f"
+         stop-opacity="0.0"
+         id="stop5" />
+    </linearGradient>
+    <!-- Outer Border Glow / Stroke Gradient -->
+    <linearGradient
+       id="btn-border-stroke"
+       x1="1.5863057"
+       y1="18.754267"
+       x2="202.36728"
+       y2="219.53524"
+       gradientTransform="matrix(2.2063843,0,0,0.45323019,-3.5,-8.5)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#ff4d6d"
+         id="stop6"
+         style="stop-color:#4dfffd;stop-opacity:1;" />
+      <stop
+         offset="1"
+         stop-color="#800f2f"
+         id="stop7"
+         style="stop-color:#0f7c80;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <!-- Button Drop Shadow -->
+  <rect
+     x="3.5"
+     y="3.5"
+     width="436"
+     height="86"
+     rx="14"
+     fill="#000000"
+     opacity="0.4"
+     id="rect7" />
+  <!-- Outer Border Frame -->
+  <rect
+     x="1.5"
+     y="1.5"
+     width="440"
+     height="88"
+     rx="14"
+     fill="none"
+     stroke="url(#btn-border-stroke)"
+     stroke-width="3"
+     id="rect8"
+     style="stroke:url(#btn-border-stroke)" />
+  <!-- Main Red Button Body -->
+  <rect
+     x="3.5"
+     y="3.5"
+     width="436"
+     height="84"
+     rx="12"
+     fill="url(#btn-red-fill)"
+     id="rect9"
+     style="fill:url(#btn-red-fill)" />
+  <!-- Glossy Bevel Highlight (Top Half) -->
+  <!-- Inner Dark Rim Stroke -->
+</svg>
