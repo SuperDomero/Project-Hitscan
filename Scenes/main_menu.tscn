@@ -157,3 +157,4 @@ placeholder_text = "Enter your display name here"
 max_length = 20
 
 [connection signal="pressed" from="Panel/Quit button" to="Panel" method="_on_quit_button_pressed"]
+[connection signal="text_submitted" from="Username entry" to="Panel" method="_on_username_entry_text_submitted"]
