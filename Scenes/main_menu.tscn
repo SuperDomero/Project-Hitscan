@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://bhdc0f306nodg"]
+
+[ext_resource type="Theme" uid="uid://pnd6qdfbe0t3" path="res://main-theme.tres" id="1_28flt"]
+[ext_resource type="Texture2D" uid="uid://bfxek53n655vr" path="res://Textures/game-title.svg" id="2_48xlc"]
+
+[node name="Main menu" type="Control" unique_id=588808320]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BG" type="TextureRect" parent="." unique_id=920843867]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="." unique_id=1908719043]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 113.0
+offset_right = 435.0
+grow_vertical = 2
+theme = ExtResource("1_28flt")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1815909782]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.098000005
+anchor_right = 0.37800002
+anchor_bottom = 1.0
+offset_left = -112.896
+offset_top = 13.0
+offset_right = 815.54395
+offset_bottom = -266.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.44, 0.44)
+texture = ExtResource("2_48xlc")
