@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c5pnyg3g1bdbe"]
+
+[ext_resource type="Texture2D" uid="uid://cvl6ddqfqys1e" path="res://addons/godot-prototype-texture/PNG/grid_512x512/grid_lime_512x512.png" id="1_kkivg"]
+[ext_resource type="Texture2D" uid="uid://56hc52ck68yo" path="res://addons/godot-prototype-texture/PNG/grid_1024x1024/grid_lime_1024x1024.png" id="2_xrhi8"]
+
+[resource]
+diffuse_mode = 3
+specular_mode = 1
+albedo_texture = ExtResource("1_kkivg")
+metallic = 1.0
+metallic_texture = ExtResource("2_xrhi8")
+roughness = 0.8
+uv1_triplanar = true
+uv1_world_triplanar = true

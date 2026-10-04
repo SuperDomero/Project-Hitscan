@@ -1,0 +1,7 @@
+[gd_resource type="Sky" format=3 uid="uid://36can1ugiwb1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l607q"]
+sky_top_color = Color(3.657937e-06, 0.65501565, 0.8506096, 1)
+
+[resource]
+sky_material = SubResource("ProceduralSkyMaterial_l607q")

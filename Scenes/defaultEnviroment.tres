@@ -1,0 +1,19 @@
+[gd_resource type="Environment" format=3 uid="uid://0bedfafl4v8"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wgce4"]
+sky_top_color = Color(7.315874e-06, 0.6556206, 0.8475788, 1)
+sun_angle_max = 10.0
+sun_curve = 1.4773734
+
+[sub_resource type="Sky" id="Sky_nkabj"]
+sky_material = SubResource("ProceduralSkyMaterial_wgce4")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_nkabj")
+tonemap_mode = 2
+sdfgi_enabled = true
+glow_enabled = true
+glow_bloom = 1.0
+fog_light_color = Color(1, 1, 1, 1)
+fog_density = 0.0

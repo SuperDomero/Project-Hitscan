@@ -3,6 +3,8 @@ extends Resource
 
 const SAVE_FILE_PATH: String = "user://save_data.tres"
 
+@export var data: Dictionary
+
 ## Saves this SaveData resource instance to disk
 func save() -> Error:
 	var error := ResourceSaver.save(self, SAVE_FILE_PATH)

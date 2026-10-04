@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bvvc48me11hac"]
+
+[ext_resource type="Environment" uid="uid://0bedfafl4v8" path="res://Scenes/defaultEnviroment.tres" id="1_vk57k"]
+[ext_resource type="PackedScene" uid="uid://bw4dk5tdu6gk" path="res://Scenes/player.tscn" id="2_8ffim"]
+[ext_resource type="Script" uid="uid://o8m1svubbjme" path="res://Scripts/PlayerMovement.gd" id="3_xfk5q"]
+
+[node name="Level1" type="Node3D" unique_id=1613250008]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1767903636]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_color = Color(0.8798705, 0.8682899, 0, 1)
+light_indirect_energy = 0.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1616471738]
+environment = ExtResource("1_vk57k")
+
+[node name="Player" parent="." unique_id=1002749477 instance=ExtResource("2_8ffim")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("3_xfk5q")
+
+[node name="Level" type="Node3D" parent="." unique_id=552282595]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level" unique_id=1344273948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(14, 1, 10)

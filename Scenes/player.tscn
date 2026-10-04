@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bw4dk5tdu6gk"]
+
+[ext_resource type="PackedScene" uid="uid://bpaxptpv6spij" path="res://Assets/player.blend" id="1_v0iea"]
+[ext_resource type="Script" uid="uid://f1dtaavb8p8t" path="res://Scripts/PlayerLook.gd" id="3_plk01"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
+
+[node name="Player" type="CharacterBody3D" unique_id=1002749477]
+
+[node name="Player model" parent="." unique_id=1283092203 instance=ExtResource("1_v0iea")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="Hat" parent="Player model" index="0" unique_id=967290272]
+layers = 2
+
+[node name="Player" parent="Player model" index="1" unique_id=627763777]
+layers = 2
+
+[node name="Sunglasses" parent="Player model" index="2" unique_id=168521048]
+layers = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=336056233]
+shape = SubResource("CapsuleShape3D_dy670")
+debug_color = Color(0.9490196, 0, 0.58431375, 1)
+
+[node name="Camera holder" type="Node3D" parent="." unique_id=63813903]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("3_plk01")
+
+[node name="Camera3D" type="Camera3D" parent="Camera holder" unique_id=649427327]
+cull_mask = 1048573
+
+[editable path="Player model"]
