@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bw4dk5tdu6gk"]
 
 [ext_resource type="PackedScene" uid="uid://bpaxptpv6spij" path="res://Assets/player.blend" id="1_v0iea"]
+[ext_resource type="ArrayMesh" uid="uid://bm82renlpq1yd" path="res://Models/sunglasses.tres" id="2_6t5aa"]
 [ext_resource type="Script" uid="uid://f1dtaavb8p8t" path="res://Scripts/PlayerLook.gd" id="3_plk01"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
@@ -18,6 +19,7 @@ layers = 2
 
 [node name="Sunglasses" parent="Player model" index="2" unique_id=168521048]
 layers = 2
+mesh = ExtResource("2_6t5aa")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=336056233]
 shape = SubResource("CapsuleShape3D_dy670")
