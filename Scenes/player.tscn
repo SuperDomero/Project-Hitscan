@@ -1,25 +1,15 @@
 [gd_scene format=3 uid="uid://bw4dk5tdu6gk"]
 
-[ext_resource type="PackedScene" uid="uid://bpaxptpv6spij" path="res://Assets/player.blend" id="1_v0iea"]
-[ext_resource type="ArrayMesh" uid="uid://bm82renlpq1yd" path="res://Models/sunglasses.tres" id="2_6t5aa"]
 [ext_resource type="Script" uid="uid://f1dtaavb8p8t" path="res://Scripts/PlayerLook.gd" id="3_plk01"]
+[ext_resource type="AudioStream" uid="uid://erpg001ec5mf" path="res://Assets/Sounds/player_slide_loop.wav" id="4_snd01"]
+[ext_resource type="ArrayMesh" uid="uid://c800dymlke2r6" path="res://Mesh/player-body.res" id="4_x3wgy"]
+[ext_resource type="ArrayMesh" uid="uid://bapy70rrnvgk5" path="res://Mesh/player-hat.res" id="5_3smsa"]
+[ext_resource type="AudioStream" uid="uid://b7aquxeomdxg2" path="res://Assets/Sounds/landing.mp3" id="5_lnd01"]
+[ext_resource type="ArrayMesh" uid="uid://rmydkax0iqd5" path="res://Mesh/player-sunglasses.res" id="6_8erm5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
 
 [node name="Player" type="CharacterBody3D" unique_id=1002749477]
-
-[node name="Player model" parent="." unique_id=1283092203 instance=ExtResource("1_v0iea")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-
-[node name="Hat" parent="Player model" index="0" unique_id=967290272]
-layers = 2
-
-[node name="Player" parent="Player model" index="1" unique_id=627763777]
-layers = 2
-
-[node name="Sunglasses" parent="Player model" index="2" unique_id=168521048]
-layers = 2
-mesh = ExtResource("2_6t5aa")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=336056233]
 shape = SubResource("CapsuleShape3D_dy670")
@@ -32,4 +22,24 @@ script = ExtResource("3_plk01")
 [node name="Camera3D" type="Camera3D" parent="Camera holder" unique_id=649427327]
 cull_mask = 1048573
 
-[editable path="Player model"]
+[node name="AudioListener3D" type="AudioListener3D" parent="Camera holder" unique_id=285513183]
+doppler_tracking = 2
+current = true
+
+[node name="PlayerSoundSource" type="AudioStreamPlayer3D" parent="." unique_id=1622827694]
+stream = ExtResource("4_snd01")
+volume_db = -16.0
+
+[node name="LandingSoundSource" type="AudioStreamPlayer3D" parent="." unique_id=1544603888]
+stream = ExtResource("5_lnd01")
+
+[node name="Model" type="Node3D" parent="." unique_id=834859871]
+
+[node name="Body" type="MeshInstance3D" parent="Model" unique_id=218389343]
+mesh = ExtResource("4_x3wgy")
+
+[node name="Hat" type="MeshInstance3D" parent="Model" unique_id=1372780826]
+mesh = ExtResource("5_3smsa")
+
+[node name="Sunglasses" type="MeshInstance3D" parent="Model" unique_id=29388767]
+mesh = ExtResource("6_8erm5")

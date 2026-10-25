@@ -42,14 +42,14 @@ const INPUT_LOG_INTERVAL: float = 5.0
 
 @export_group("Slide Pose")
 ## Height of the collision pill while sliding, also used to sink the body.
-@export var slide_capsule_height: float = 1.3
+@export var slide_capsule_height: float = 0.1
 @export var slide_pose_speed: float = 4.0
 
 @export_group("Slide Camera")
 ## Share of the body sink the camera follows, 1.0 drops with the full pose.
 @export var slide_camera_drop_ratio: float = 1.0
 ## Field of view degrees lost at full slide depth.
-@export var slide_camera_fov_shrink: float = 12.0
+@export var slide_camera_fov_shrink: float = -30.0
 ## Roll degrees at full slide steering, leaning into the turn.
 @export var slide_camera_roll_degrees: float = 4.0
 ## Slide speeds between which the lean grows, none below and full above.
@@ -58,15 +58,43 @@ const INPUT_LOG_INTERVAL: float = 5.0
 ## Roll degrees per second the camera catches up with the steering.
 @export var slide_camera_roll_speed: float = 90.0
 
+@export_group("Slide Audio")
+## Speeds between which the slide sound rises in pitch and volume.
+@export var slide_audio_slow_speed: float = 1.885
+@export var slide_audio_fast_speed: float = 12.77
+@export var slide_audio_min_pitch: float = 0.85
+@export var slide_audio_max_pitch: float = 1.35
+@export var slide_audio_quiet_db: float = -32.0
+@export var slide_audio_loud_db: float = -18.0
+## Fraction of full volume the sound fades in or out per second.
+@export var slide_audio_fade_speed: float = 8.0
+
+@export_group("Landing Audio")
+## Extra pitch added to the landing sound when the landing starts a slide.
+@export var landing_slide_pitch_bonus: float = 0.25
+## Random pitch variation applied to every landing, in both directions.
+@export var landing_pitch_variation: float = 0.3
+
+@export_group("Landing Camera")
+## Roll degrees kicked to the right on landing, layered over the slide roll.
+@export var landing_camera_kick_degrees: float = 7.0
+## Stiffness and damping of the spring that returns the kick to centre.
+@export var landing_camera_kick_stiffness: float = 300.0
+@export var landing_camera_kick_damping: float = 3.0
+
 @export var collision_shape_path: NodePath = ^"CollisionShape3D"
 @export var model_path: NodePath = ^"Player model"
 @export var camera_path: NodePath = ^"Camera holder"
+@export var sound_source_path: NodePath = ^"PlayerSoundSource"
+@export var landing_sound_path: NodePath = ^"LandingSoundSource"
 
 @onready var jump_velocity: float = sqrt(2.0 * gravity * jump_height)
 @onready var _collision_shape: CollisionShape3D = get_node(collision_shape_path)
 @onready var _model: Node3D = get_node(model_path)
 @onready var _camera_holder: Node3D = get_node(camera_path)
 @onready var _camera: Camera3D = _camera_holder.find_child("Camera3D", true, false) as Camera3D
+@onready var _sound_source: AudioStreamPlayer3D = get_node_or_null(sound_source_path)
+@onready var _landing_source: AudioStreamPlayer3D = get_node_or_null(landing_sound_path)
 
 var _move_input := Vector2.ZERO
 var _wish_direction := Vector3.ZERO
@@ -79,6 +107,10 @@ var _slide_buffer := 0.0
 var _slide_pose := 0.0
 var _slide_steer := 0.0
 var _slide_roll := 0.0
+var _sound_fade := 0.0
+var _was_on_floor := true
+var _landing_kick := 0.0
+var _landing_kick_velocity := 0.0
 var _capsule := CapsuleShape3D.new()
 var _standing_height := 0.0
 var _crouch_height := 0.0
@@ -103,7 +135,11 @@ func _physics_process(delta: float) -> void:
 	_apply_vertical_movement(delta)
 	_update_slide_pose(delta)
 	_update_slide_camera(delta)
+	_update_slide_audio(delta)
 	move_and_slide()
+	_update_landing()
+	_update_landing_camera(delta)
+	_apply_camera_roll()
 	_log_inputs(delta)
 
 
@@ -245,7 +281,77 @@ func _update_slide_camera(delta: float) -> void:
 	)
 	var roll_target := slide_camera_roll_degrees * _slide_pose * _slide_steer * speed_weight
 	_slide_roll = move_toward(_slide_roll, roll_target, slide_camera_roll_speed * delta)
-	_camera_holder.rotation.z = deg_to_rad(-_slide_roll)
+
+
+## Applies the slide roll plus the landing kick to the camera in one place.
+func _apply_camera_roll() -> void:
+	_camera_holder.rotation.z = deg_to_rad(-(_slide_roll + _landing_kick))
+
+
+## Returns the landing kick to centre, springing like a Valve view punch.
+func _update_landing_camera(delta: float) -> void:
+	var acceleration := (
+		-landing_camera_kick_stiffness * _landing_kick
+		- landing_camera_kick_damping * _landing_kick_velocity
+	)
+	_landing_kick_velocity += acceleration * delta
+	_landing_kick += _landing_kick_velocity * delta
+
+
+## Plays the looping slide sound while sliding, fading it in and out with the
+## slide and pitching and raising its volume with the horizontal speed.
+func _update_slide_audio(delta: float) -> void:
+	if _sound_source == null:
+		return
+
+	var fade_target := 1.0 if _sliding else 0.0
+	_sound_fade = move_toward(_sound_fade, fade_target, slide_audio_fade_speed * delta)
+
+	var audible := _sound_fade > 0.001
+	if audible and not _sound_source.playing:
+		_sound_source.play()
+	elif not audible and _sound_source.playing:
+		_sound_source.stop()
+		return
+	if not audible:
+		return
+
+	var speed_weight := clampf(
+		inverse_lerp(slide_audio_slow_speed, slide_audio_fast_speed, _horizontal_speed()),
+		0.0,
+		1.0
+	)
+	_sound_source.pitch_scale = lerpf(slide_audio_min_pitch, slide_audio_max_pitch, speed_weight)
+	_sound_source.volume_db = (
+		lerpf(slide_audio_quiet_db, slide_audio_loud_db, speed_weight)
+		+ linear_to_db(_sound_fade)
+	)
+
+
+## Fires the landing sound on the frame the player touches down after being
+## airborne.
+func _update_landing() -> void:
+	var on_floor := is_on_floor()
+	if on_floor and not _was_on_floor:
+		_play_landing()
+		_start_landing_kick()
+	_was_on_floor = on_floor
+
+
+func _start_landing_kick() -> void:
+	_landing_kick = landing_camera_kick_degrees
+	_landing_kick_velocity = 0.0
+
+
+## Pitches the landing up when it begins a slide, plus a small random offset.
+func _play_landing() -> void:
+	if _landing_source == null:
+		return
+	var slide_landing := _slide_buffer > 0.0
+	var pitch := 1.0 + (landing_slide_pitch_bonus if slide_landing else 0.0)
+	pitch += randf_range(-landing_pitch_variation, landing_pitch_variation)
+	_landing_source.pitch_scale = maxf(pitch, 0.01)
+	_landing_source.play()
 
 
 ## Standing up stays blocked while the standing shape does not fit in the
