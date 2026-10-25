@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://bw4dk5tdu6gk"]
 
 [ext_resource type="Script" uid="uid://f1dtaavb8p8t" path="res://Scripts/PlayerLook.gd" id="3_plk01"]
+[ext_resource type="Script" uid="uid://c6nqn4k532oxl" path="res://Scripts/PlayerSounds.gd" id="4_sndscr"]
 [ext_resource type="AudioStream" uid="uid://erpg001ec5mf" path="res://Assets/Sounds/player_slide_loop.wav" id="4_snd01"]
-[ext_resource type="ArrayMesh" uid="uid://c800dymlke2r6" path="res://Mesh/player-body.res" id="4_x3wgy"]
-[ext_resource type="ArrayMesh" uid="uid://bapy70rrnvgk5" path="res://Mesh/player-hat.res" id="5_3smsa"]
+[ext_resource type="ArrayMesh" uid="uid://b1xvreyopfrn7" path="res://Mesh/player-body.res" id="4_x3wgy"]
+[ext_resource type="ArrayMesh" uid="uid://prkbcg0pgimj" path="res://Mesh/player-hat.res" id="5_3smsa"]
 [ext_resource type="AudioStream" uid="uid://b7aquxeomdxg2" path="res://Assets/Sounds/landing.mp3" id="5_lnd01"]
-[ext_resource type="ArrayMesh" uid="uid://rmydkax0iqd5" path="res://Mesh/player-sunglasses.res" id="6_8erm5"]
+[ext_resource type="ArrayMesh" uid="uid://b4wut0bxhwmrn" path="res://Mesh/player-sunglasses.res" id="6_8erm5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
 
@@ -25,6 +26,9 @@ cull_mask = 1048573
 [node name="AudioListener3D" type="AudioListener3D" parent="Camera holder" unique_id=285513183]
 doppler_tracking = 2
 current = true
+
+[node name="PlayerSounds" type="Node" parent="." unique_id=1948203561]
+script = ExtResource("4_sndscr")
 
 [node name="PlayerSoundSource" type="AudioStreamPlayer3D" parent="." unique_id=1622827694]
 stream = ExtResource("4_snd01")
