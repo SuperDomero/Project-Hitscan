@@ -39,6 +39,21 @@ const INPUT_LOG_INTERVAL: float = 5.0
 @export var slide_boost_cooldown: float = 2.0
 ## Seconds a slide press is remembered, so pressing in mid air slides on landing.
 @export var slide_land_buffer: float = 0.5
+## Share of the sliding velocity added to the horizontal speed when a slide is
+## cancelled into a jump, 1.0 adds the full sliding velocity.
+@export var slide_jump_velocity_share: float = 1.0
+
+@export_group("Bunny Hop")
+## Seconds a jump press before landing is remembered, so it fires on touchdown.
+@export var bunny_hop_jump_window: float = 0.2
+## Degrees the horizontal velocity turns towards the look direction on a bunny hop.
+@export var bunny_hop_steer_degrees: float = 60.0
+## Share of the horizontal velocity kept on a bunny hop, 1.0 keeps all of it.
+@export var bunny_hop_velocity_multiplier: float = 0.9
+## Field of view degrees the camera kicks wider on a bunny hop.
+@export var bunny_hop_camera_fov_kick: float = 3.284
+## Degrees per second the bunny hop FOV kick returns to the base field of view.
+@export var bunny_hop_camera_fov_kick_speed: float = 8.0
 
 @export_group("Slide Pose")
 ## Height of the collision pill while sliding, also used to sink the body.
@@ -60,10 +75,10 @@ const INPUT_LOG_INTERVAL: float = 5.0
 
 @export_group("Landing Camera")
 ## Roll degrees kicked to the right on landing, layered over the slide roll.
-@export var landing_camera_kick_degrees: float = 7.0
+@export var landing_camera_kick_degrees: float = 5.0
 ## Stiffness and damping of the spring that returns the kick to centre.
 @export var landing_camera_kick_stiffness: float = 300.0
-@export var landing_camera_kick_damping: float = 3.0
+@export var landing_camera_kick_damping: float = 15.0
 
 @export var collision_shape_path: NodePath = ^"CollisionShape3D"
 @export var model_path: NodePath = ^"Model"
@@ -85,6 +100,9 @@ var _sliding := false
 var _slide_time_left := 0.0
 var _slide_cooldown := 0.0
 var _slide_buffer := 0.0
+var _jump_buffer := 0.0
+var _bunny_hop_buffered := false
+var _bunny_hop_fov_kick := 0.0
 var _slide_pose := 0.0
 var _slide_steer := 0.0
 var _slide_roll := 0.0
@@ -110,6 +128,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_update_input()
+	_update_jump_buffer(delta)
 	_update_slide(delta)
 	_apply_horizontal_movement(delta)
 	_apply_vertical_movement(delta)
@@ -143,6 +162,19 @@ func _update_input() -> void:
 	_wish_direction.y = 0.0
 	if not _wish_direction.is_zero_approx():
 		_wish_direction = _wish_direction.normalized()
+
+
+## Remembers a jump press for a short window so it can fire on touchdown, and
+## tracks whether that press happened mid air for the bunny hop steer.
+func _update_jump_buffer(delta: float) -> void:
+	if not is_on_floor():
+		_jump_buffer = maxf(_jump_buffer - delta, 0.0)
+		if _jump_buffer <= 0.0:
+			_bunny_hop_buffered = false
+
+	if Input.is_action_just_pressed(ACTION_JUMP):
+		_jump_buffer = bunny_hop_jump_window
+		_bunny_hop_buffered = not is_on_floor()
 
 
 func _update_slide(delta: float) -> void:
@@ -179,6 +211,9 @@ func _start_slide() -> void:
 
 
 func _apply_horizontal_movement(delta: float) -> void:
+	if _jump_buffer > 0.0 and is_on_floor():
+		return
+
 	var horizontal := _horizontal_velocity()
 
 	if _sliding:
@@ -222,11 +257,48 @@ func _steer_slide(horizontal: Vector3, delta: float) -> Vector3:
 func _apply_vertical_movement(delta: float) -> void:
 	if is_on_floor():
 		velocity.y = 0.0
-		if Input.is_action_just_pressed(ACTION_JUMP):
-			_sliding = false
-			velocity.y = jump_velocity
+		if _jump_buffer > 0.0:
+			_perform_jump()
 	else:
 		velocity.y = maxf(velocity.y - gravity * delta, -terminal_velocity)
+
+
+## Jumps, turning a cancelled slide into extra speed, steering a bunny hop
+## towards the look direction and kicking the field of view.
+func _perform_jump() -> void:
+	_jump_buffer = 0.0
+	if _sliding:
+		_sliding = false
+		var horizontal := _horizontal_velocity()
+		_set_horizontal_velocity(horizontal * (1.0 + slide_jump_velocity_share))
+	velocity.y = jump_velocity
+	if _bunny_hop_buffered:
+		_bunny_hop_buffered = false
+		_set_horizontal_velocity(_horizontal_velocity() * bunny_hop_velocity_multiplier)
+		_bunny_hop_fov_kick = bunny_hop_camera_fov_kick
+		_steer_bunny_hop()
+
+
+## Rotates the horizontal velocity towards the flattened look direction by at
+## most bunny_hop_steer_degrees, keeping its speed.
+func _steer_bunny_hop() -> void:
+	var horizontal := _horizontal_velocity()
+	if horizontal.is_zero_approx():
+		return
+
+	var look := -global_basis.z
+	look.y = 0.0
+	if look.is_zero_approx():
+		return
+	look = look.normalized()
+
+	var heading := horizontal.normalized()
+	var angle := heading.angle_to(look)
+	if heading.cross(look).y < 0.0:
+		angle = -angle
+	var max_turn := deg_to_rad(bunny_hop_steer_degrees)
+	var turn := clampf(angle, -max_turn, max_turn)
+	_set_horizontal_velocity(heading.rotated(Vector3.UP, turn) * horizontal.length())
 
 
 ## Sinks the body into the slide pose and back out, keeping the feet planted.
@@ -247,10 +319,18 @@ func _set_pose_geometry(pose: float) -> void:
 	_camera_holder.position.y = _camera_stand_y + sink * slide_camera_drop_ratio
 
 
-## Narrows the field of view while sliding and banks the camera into the turn.
+## Narrows the field of view while sliding, kicks it on a bunny hop, and banks
+## the camera into the turn.
 func _update_slide_camera(delta: float) -> void:
+	_bunny_hop_fov_kick = move_toward(
+		_bunny_hop_fov_kick, 0.0, bunny_hop_camera_fov_kick_speed * delta
+	)
 	if _camera != null:
-		_camera.fov = GlobalSettings.field_of_view - slide_camera_fov_shrink * _slide_pose
+		_camera.fov = (
+			GlobalSettings.field_of_view
+			- slide_camera_fov_shrink * _slide_pose
+			+ _bunny_hop_fov_kick
+		)
 
 	var speed_weight := clampf(
 		inverse_lerp(
@@ -291,8 +371,14 @@ func _update_landing() -> void:
 	if on_floor and not _was_on_floor:
 		if _sounds != null:
 			_sounds.play_landing(_slide_buffer > 0.0)
-		_start_landing_kick()
+		if not _is_bunny_hop_pending():
+			_start_landing_kick()
 	_was_on_floor = on_floor
+
+
+## True when the landing will immediately fire a buffered jump.
+func _is_bunny_hop_pending() -> bool:
+	return _bunny_hop_buffered and _jump_buffer > 0.0
 
 
 func _start_landing_kick() -> void:
@@ -338,6 +424,8 @@ func _log_inputs(delta: float) -> void:
 		" on_floor=", is_on_floor(),
 		" slide_time=", _slide_time_left,
 		" slide_buffer=", snappedf(_slide_buffer, 0.01),
+		" jump_buffer=", snappedf(_jump_buffer, 0.01),
+		" bunny_hop=", _bunny_hop_buffered,
 		" boost_ready=", _slide_cooldown <= 0.0,
 		" pose=", _slide_pose
 	)

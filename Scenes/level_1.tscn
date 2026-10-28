@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bw4dk5tdu6gk" path="res://Scenes/player.tscn" id="2_8ffim"]
 [ext_resource type="Script" uid="uid://o8m1svubbjme" path="res://Scripts/PlayerMovement.gd" id="3_xfk5q"]
 [ext_resource type="Material" uid="uid://c5pnyg3g1bdbe" path="res://Materials/green.tres" id="4_7p6j4"]
+[ext_resource type="PackedScene" uid="uid://vqjad2351g1p" path="res://Scenes/muzzle_flash.tscn" id="5_6444e"]
 
 [node name="Level1" type="Node3D" unique_id=1613250008]
 
@@ -18,6 +19,7 @@ environment = ExtResource("1_vk57k")
 [node name="Player" parent="." unique_id=1002749477 instance=ExtResource("2_8ffim")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 script = ExtResource("3_xfk5q")
+landing_camera_kick_damping = 12.0
 
 [node name="Level" type="Node3D" parent="." unique_id=552282595]
 
@@ -31,3 +33,6 @@ material = ExtResource("4_7p6j4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 use_collision = true
 size = Vector3(4, 1, 1)
+
+[node name="MuzzleFlash" parent="." unique_id=1939074207 instance=ExtResource("5_6444e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.93952084, 2.0000005, -6.0417104)

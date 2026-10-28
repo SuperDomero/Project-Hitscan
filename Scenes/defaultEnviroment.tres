@@ -2,6 +2,9 @@
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wgce4"]
 sky_top_color = Color(7.315874e-06, 0.6556206, 0.8475788, 1)
+sky_horizon_color = Color(0.64705884, 0.654902, 0.67058825, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.64705884, 0.654902, 0.67058825, 1)
 sun_angle_max = 10.0
 sun_curve = 1.4773734
 
@@ -12,6 +15,8 @@ sky_material = SubResource("ProceduralSkyMaterial_wgce4")
 background_mode = 2
 sky = SubResource("Sky_nkabj")
 tonemap_mode = 2
-glow_bloom = 1.0
+glow_enabled = true
+glow_intensity = 1.0
+glow_bloom = 0.5
 fog_light_color = Color(1, 1, 1, 1)
 fog_density = 0.0

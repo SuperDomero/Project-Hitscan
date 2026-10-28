@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bw4dk5tdu6gk"]
 
 [ext_resource type="Script" uid="uid://f1dtaavb8p8t" path="res://Scripts/PlayerLook.gd" id="3_plk01"]
-[ext_resource type="Script" uid="uid://c6nqn4k532oxl" path="res://Scripts/PlayerSounds.gd" id="4_sndscr"]
 [ext_resource type="AudioStream" uid="uid://erpg001ec5mf" path="res://Assets/Sounds/player_slide_loop.wav" id="4_snd01"]
+[ext_resource type="Script" uid="uid://c6nqn4k532oxl" path="res://Scripts/PlayerSounds.gd" id="4_sndscr"]
 [ext_resource type="ArrayMesh" uid="uid://b1xvreyopfrn7" path="res://Mesh/player-body.res" id="4_x3wgy"]
 [ext_resource type="ArrayMesh" uid="uid://prkbcg0pgimj" path="res://Mesh/player-hat.res" id="5_3smsa"]
 [ext_resource type="AudioStream" uid="uid://b7aquxeomdxg2" path="res://Assets/Sounds/landing.mp3" id="5_lnd01"]
@@ -40,10 +40,16 @@ stream = ExtResource("5_lnd01")
 [node name="Model" type="Node3D" parent="." unique_id=834859871]
 
 [node name="Body" type="MeshInstance3D" parent="Model" unique_id=218389343]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+layers = 2
 mesh = ExtResource("4_x3wgy")
 
 [node name="Hat" type="MeshInstance3D" parent="Model" unique_id=1372780826]
+transform = Transform3D(0.5, 0, 0, 0, -0.015069847, 0.49977285, 0, -0.49977285, -0.015069847, 0, -0.06729984, 0.04206276)
+layers = 2
 mesh = ExtResource("5_3smsa")
 
 [node name="Sunglasses" type="MeshInstance3D" parent="Model" unique_id=29388767]
+transform = Transform3D(-8.742276e-09, 0, -0.16999994, 0, 0.17999995, 0, 0.19999997, 0, -7.4309336e-09, 0, 0.3, 0.1)
+layers = 2
 mesh = ExtResource("6_8erm5")

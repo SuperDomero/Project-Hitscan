@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c4etiapg7bomd"]
+
+[ext_resource type="PackedScene" uid="uid://cxfax0h654gib" path="res://Assets/pistol.glb" id="1_j1qo2"]
+
+[node name="pistol" unique_id=554717265 instance=ExtResource("1_j1qo2")]
+
+[node name="AnimationPlayer" parent="." index="2" unique_id=523156774]
+speed_scale = 3.0
