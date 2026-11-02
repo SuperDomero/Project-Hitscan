@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bw4dk5tdu6gk"]
 
+[ext_resource type="PackedScene" uid="uid://c4etiapg7bomd" path="res://Scenes/pistol.tscn" id="2_8erm5"]
 [ext_resource type="Script" uid="uid://f1dtaavb8p8t" path="res://Scripts/PlayerLook.gd" id="3_plk01"]
 [ext_resource type="AudioStream" uid="uid://erpg001ec5mf" path="res://Assets/Sounds/player_slide_loop.wav" id="4_snd01"]
 [ext_resource type="Script" uid="uid://c6nqn4k532oxl" path="res://Scripts/PlayerSounds.gd" id="4_sndscr"]
@@ -7,8 +8,12 @@
 [ext_resource type="ArrayMesh" uid="uid://prkbcg0pgimj" path="res://Mesh/player-hat.res" id="5_3smsa"]
 [ext_resource type="AudioStream" uid="uid://b7aquxeomdxg2" path="res://Assets/Sounds/landing.mp3" id="5_lnd01"]
 [ext_resource type="ArrayMesh" uid="uid://b4wut0bxhwmrn" path="res://Mesh/player-sunglasses.res" id="6_8erm5"]
+[ext_resource type="Script" uid="uid://boiepggk47t8q" path="res://Scripts/weapon_holder.gd" id="8_f1ek2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dy670"]
+viewport_path = NodePath("GunViewport")
 
 [node name="Player" type="CharacterBody3D" unique_id=1002749477]
 
@@ -45,11 +50,43 @@ layers = 2
 mesh = ExtResource("4_x3wgy")
 
 [node name="Hat" type="MeshInstance3D" parent="Model" unique_id=1372780826]
-transform = Transform3D(0.5, 0, 0, 0, -0.015069847, 0.49977285, 0, -0.49977285, -0.015069847, 0, -0.06729984, 0.04206276)
+transform = Transform3D(-0.5, -4.369153e-08, -1.3174478e-09, 0, -0.015069849, 0.4997729, -4.3711392e-08, 0.4997729, 0.015069849, 0, -0.06729984, 0.04206276)
 layers = 2
 mesh = ExtResource("5_3smsa")
 
 [node name="Sunglasses" type="MeshInstance3D" parent="Model" unique_id=29388767]
-transform = Transform3D(-8.742276e-09, 0, -0.16999994, 0, 0.17999995, 0, 0.19999997, 0, -7.4309336e-09, 0, 0.3, 0.1)
+transform = Transform3D(2.6226829e-08, 0, 0.16999994, 0, 0.17999996, 0, -0.2, 0, 2.2292802e-08, 0, 0.3, -0.08711734)
 layers = 2
 mesh = ExtResource("6_8erm5")
+
+[node name="GunViewport" type="SubViewport" parent="." unique_id=225503241]
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="WeaponHolder" type="Node3D" parent="GunViewport" unique_id=1907352804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.3, -0.5)
+script = ExtResource("8_f1ek2")
+
+[node name="pistol" parent="GunViewport/WeaponHolder" unique_id=554717265 instance=ExtResource("2_8erm5")]
+
+[node name="Camera3D" type="Camera3D" parent="GunViewport" unique_id=1447205609]
+cull_mask = 1047556
+fov = 65.0
+
+[node name="HUD" type="Control" parent="." unique_id=1759233778]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="GunViewport" type="TextureRect" parent="HUD" unique_id=1512034599]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_dy670")

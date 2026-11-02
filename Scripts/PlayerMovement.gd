@@ -11,6 +11,10 @@ const ACTION_SNEAK := &"lControl"
 const TICKS_PER_SECOND: float = 20.0
 const INPUT_LOG_INTERVAL: float = 5.0
 
+var slide_pose: float:
+	get:
+		return _slide_pose
+
 @export_group("Speeds")
 @export var walk_speed: float = 7.317
 @export var sneak_speed: float = 3.295

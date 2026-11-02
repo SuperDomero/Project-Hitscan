@@ -81,3 +81,5 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 viewport/hdr_2d=true
 anti_aliasing/quality/msaa_3d=3
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+anti_aliasing/quality/use_debanding=true

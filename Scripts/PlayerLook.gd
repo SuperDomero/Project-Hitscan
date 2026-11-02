@@ -1,7 +1,7 @@
 extends Node3D
 
 @export var player_path: NodePath = NodePath("..")
-@export var pitch_limit_degrees: float = 90.0
+@export var pitch_limit_degrees: float = 89.0
 
 @onready var _player: Node3D = get_node(player_path)
 @onready var _camera: Camera3D = find_child("Camera3D", true, false) as Camera3D

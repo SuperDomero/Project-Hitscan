@@ -36,3 +36,9 @@ size = Vector3(4, 1, 1)
 
 [node name="MuzzleFlash" parent="." unique_id=1939074207 instance=ExtResource("5_6444e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.93952084, 2.0000005, -6.0417104)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=568404739]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 3, 2)
+light_energy = 10.0
+light_indirect_energy = 0.0
+distance_fade_enabled = true

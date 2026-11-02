@@ -29,6 +29,9 @@ point_count = 2
 curve = SubResource("Curve_xbt7w")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6yj61"]
+use_rotation_3d = true
+rotation_3d_min = Vector3(0, 0, 0)
+rotation_3d_max = Vector3(0, 0, 90)
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_2ugjg")
 color = Color(1, 0.8352941, 0.42745098, 1)
@@ -40,8 +43,9 @@ alpha_curve = SubResource("CurveTexture_xbt7w")
 material_override = SubResource("StandardMaterial3D_dy670")
 amount = 1
 lifetime = 0.1
-preprocess = 0.15
 randomness = 1.0
+use_fixed_seed = true
 fixed_fps = 120
+interpolate = false
 process_material = SubResource("ParticleProcessMaterial_6yj61")
 draw_pass_1 = ExtResource("2_2ugjg")

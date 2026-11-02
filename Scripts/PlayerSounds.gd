@@ -4,11 +4,11 @@ extends Node
 @export_group("Slide Audio")
 ## Speeds between which the slide sound rises in pitch and volume.
 @export var slide_audio_slow_speed: float = 1.885
-@export var slide_audio_fast_speed: float = 12.77
+@export var slide_audio_fast_speed: float = 8.77
 @export var slide_audio_min_pitch: float = 0.85
 @export var slide_audio_max_pitch: float = 1.35
-@export var slide_audio_quiet_db: float = -32.0
-@export var slide_audio_loud_db: float = -18.0
+@export var slide_audio_quiet_db: float = -46.0
+@export var slide_audio_loud_db: float = -36.0
 ## Fraction of full volume the sound fades in or out per second.
 @export var slide_audio_fade_speed: float = 8.0
 
