@@ -1,3 +1,4 @@
+class_name PlayerMovement
 extends CharacterBody3D
 
 const ACTION_FORWARD := &"w"
