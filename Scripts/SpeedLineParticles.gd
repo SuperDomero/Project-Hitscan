@@ -14,25 +14,41 @@ extends GPUParticles3D
 ## How quickly the amount follows the speed.
 @export var fade_speed: float = 6.0
 
+@export_group("Spawn Offset")
+## Spawn distance ahead of the camera at full speed, in metres. Negative values
+## push the spawn box further ahead.
+@export var spawn_offset_at_max_speed: float = -3.5
+
+@export var camera_holder_path: NodePath = ^"Camera holder"
+
 @onready var _player: PlayerMovement = get_node_or_null(player_path) as PlayerMovement
 
+var _camera_holder: Node3D = null
+var _particle_material: ParticleProcessMaterial = null
+var _base_spawn_offset := 0.0
+var _speed_ratio := 0.0
 var _amount_ratio := 0.0
 
 
 func _ready() -> void:
 	local_coords = false
+	_particle_material = process_material as ParticleProcessMaterial
+	if _particle_material != null:
+		_base_spawn_offset = _particle_material.emission_shape_offset.z
+	if _player != null:
+		_camera_holder = _player.get_node_or_null(camera_holder_path) as Node3D
 	_update_orientation()
 	amount_ratio = 0.0
 
 
 func _process(delta: float) -> void:
 	_update_orientation()
-	_update_amount(delta)
+	_update_speed(delta)
 
 
-## Scales the active particle count with speed, using the same fade and speed
-## mapping the shader effect used for its alpha.
-func _update_amount(delta: float) -> void:
+## Scales the active particle count and spawn offset with speed, using the same
+## fade the shader effect used for its alpha.
+func _update_speed(delta: float) -> void:
 	if _player == null:
 		return
 
@@ -43,10 +59,23 @@ func _update_amount(delta: float) -> void:
 	elif speed >= max_speed:
 		target_ratio = 1.0
 
-	target_ratio *= max_amount_ratio
 	var fade := 1.0 - exp(-fade_speed * delta)
-	_amount_ratio = lerpf(_amount_ratio, target_ratio, fade)
+	_speed_ratio = lerpf(_speed_ratio, target_ratio, fade)
+	_amount_ratio = lerpf(_amount_ratio, target_ratio * max_amount_ratio, fade)
 	amount_ratio = _amount_ratio
+
+	if _particle_material != null:
+		var distance := -lerpf(_base_spawn_offset, spawn_offset_at_max_speed, _speed_ratio)
+		var target := global_position
+		if _camera_holder != null:
+			target = (
+				_camera_holder.global_position
+				+ _camera_holder.global_basis * Vector3(0.0, 0.0, -distance)
+			)
+		else:
+			target -= global_basis.z * distance
+		var local_offset := global_basis.inverse() * (target - global_position)
+		_particle_material.emission_shape_offset = local_offset
 
 
 ## Reorients the emitter so newly spawned particles face the player's velocity.
