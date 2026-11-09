@@ -14,6 +14,8 @@ sky_material = SubResource("ProceduralSkyMaterial_wgce4")
 [resource]
 background_mode = 2
 sky = SubResource("Sky_nkabj")
+ambient_light_sky_contribution = 0.3
+ambient_light_energy = 0.8
 tonemap_mode = 2
 glow_enabled = true
 glow_intensity = 0.5

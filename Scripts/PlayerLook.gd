@@ -19,7 +19,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	var mouse_motion := event as InputEventMouseMotion
 	if mouse_motion == null:
 		return
-	_apply_look(mouse_motion.relative)
+	GlobalSettings.feed_mouse_motion(mouse_motion.relative)
+
+
+func _process(_delta: float) -> void:
+	if not GlobalSettings.pointer_locked:
+		GlobalSettings.reset_mouse_smoothing()
+		return
+	_apply_look(GlobalSettings.consume_mouse_motion())
 
 
 func _apply_look(relative: Vector2) -> void:

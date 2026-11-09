@@ -10,6 +10,23 @@ The whole feel is authored as flat, tunable `@export` constants on the player
 script, with camera effects derived from simulation state. Match this style
 exactly when adding anything.
 
+## Godot executable (Steam install)
+
+- **Binary:** `/home/doma/.steam/debian-installation/steamapps/common/Godot Engine/godot.x11.opt.tools.64`
+- **Version:** `4.7.2.stable.official.ed1daf0bf`
+- Run the project:
+  ```bash
+  "/home/doma/.steam/debian-installation/steamapps/common/Godot Engine/godot.x11.opt.tools.64" --path /home/doma/Project-Hitscan
+  ```
+- Open the editor:
+  ```bash
+  "/home/doma/.steam/debian-installation/steamapps/common/Godot Engine/godot.x11.opt.tools.64" -e --path /home/doma/Project-Hitscan
+  ```
+- Headless validation / script run (no window):
+  ```bash
+  "/home/doma/.steam/debian-installation/steamapps/common/Godot Engine/godot.x11.opt.tools.64" --headless --path /home/doma/Project-Hitscan --quit
+  ```
+
 ## Files and where things live
 
 | Concern | File |

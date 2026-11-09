@@ -12,7 +12,9 @@ vertex_color_is_srgb = true
 albedo_texture = ExtResource("1_xbt7w")
 emission_enabled = true
 emission = Color(1, 0.8352941, 0.42745098, 1)
-emission_energy_multiplier = 4.0
+emission_energy_multiplier = 8.0
+emission_operator = 1
+emission_texture = ExtResource("1_xbt7w")
 
 [sub_resource type="Curve" id="Curve_2ugjg"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -45,7 +47,9 @@ amount = 1
 lifetime = 0.1
 randomness = 1.0
 use_fixed_seed = true
+seed = 2461711721
 fixed_fps = 120
 interpolate = false
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_6yj61")
 draw_pass_1 = ExtResource("2_2ugjg")

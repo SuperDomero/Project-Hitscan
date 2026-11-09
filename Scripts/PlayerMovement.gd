@@ -60,6 +60,15 @@ var slide_pose: float:
 ## Degrees per second the bunny hop FOV kick returns to the base field of view.
 @export var bunny_hop_camera_fov_kick_speed: float = 8.0
 
+@export_group("Physics Push")
+## Impulse applied to a rigid body per m/s of the player's horizontal speed into
+## it, in kg·m/s. Higher speeds (like a slide) shove harder.
+@export var push_impulse_per_speed: float = 1.0
+## Cap on the impulse from a single collision, in kg·m/s.
+@export var push_max_impulse: float = 15.0
+## Bodies heavier than this are not pushed, 0.0 pushes any mass.
+@export var push_max_mass: float = 0.0
+
 @export_group("Slide Pose")
 ## Height of the collision pill while sliding, also used to sink the body.
 @export var slide_capsule_height: float = 0.1
@@ -140,7 +149,9 @@ func _physics_process(delta: float) -> void:
 	_update_slide_pose(delta)
 	_update_slide_camera(delta)
 	_update_slide_audio(delta)
+	var move_velocity := velocity
 	move_and_slide()
+	_push_rigid_bodies(move_velocity)
 	_update_landing()
 	_update_landing_camera(delta)
 	_apply_camera_roll()
@@ -411,6 +422,48 @@ func _set_horizontal_velocity(horizontal: Vector3) -> void:
 
 func _horizontal_speed() -> float:
 	return _horizontal_velocity().length()
+
+
+## Applies an impulse to every rigid body the player ran into this tick. The
+## move velocity is captured before move_and_slide, because that call removes the
+## component that points into the surface.
+func _push_rigid_bodies(move_velocity: Vector3) -> void:
+	var horizontal := Vector3(move_velocity.x, 0.0, move_velocity.z)
+	if horizontal.is_zero_approx():
+		return
+
+	var pushed: Array[int] = []
+	for index in get_slide_collision_count():
+		var collision := get_slide_collision(index)
+		var body := collision.get_collider() as RigidBody3D
+		if body == null or body.freeze:
+			continue
+		if push_max_mass > 0.0 and body.mass > push_max_mass:
+			continue
+		var body_id := body.get_instance_id()
+		if pushed.has(body_id):
+			continue
+
+		var normal := collision.get_normal()
+		normal.y = 0.0
+		if normal.is_zero_approx():
+			continue
+		normal = normal.normalized()
+
+		var impact_speed := -horizontal.dot(normal)
+		if impact_speed <= 0.0:
+			continue
+
+		var impulse := minf(impact_speed * push_impulse_per_speed, push_max_impulse)
+		if impulse <= 0.0:
+			continue
+
+		pushed.append(body_id)
+		body.sleeping = false
+		body.apply_impulse(
+			-normal * impulse,
+			collision.get_position() - body.global_position
+		)
 
 
 func _log_inputs(delta: float) -> void:
