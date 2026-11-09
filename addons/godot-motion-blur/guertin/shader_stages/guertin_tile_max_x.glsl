@@ -1,0 +1,72 @@
+#[compute]
+#version 450
+
+#define FLT_MAX 3.402823466e+38
+#define FLT_MIN 1.175494351e-38
+
+layout(set = 0, binding = 0) uniform sampler2D velocity_sampler;
+layout(rg8i, set = 0, binding = 1) uniform writeonly iimage2D tile_max_x;
+// DEBUG_UNIFORMS
+
+layout(push_constant, std430) uniform Params 
+{
+	int tile_size;
+	int nan2;
+	int nan3;
+	int nan4;
+} params;
+
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+
+void main() 
+{
+	ivec2 render_size = ivec2(textureSize(velocity_sampler, 0));
+
+	ivec2 output_size = imageSize(tile_max_x);
+	
+	ivec2 uvi = ivec2(gl_GlobalInvocationID.xy);
+
+	ivec2 global_uvi = uvi * ivec2(params.tile_size, 1);
+
+	if ((uvi.x >= output_size.x) || (uvi.y >= output_size.y) || (global_uvi.x >= render_size.x) || (global_uvi.y >= render_size.y))  
+	{
+		return;
+	}
+
+	ivec4 max_velocity = ivec4(0);
+
+	float max_velocity_length_squared = -1;
+
+	for(int i = 0; i < params.tile_size; i++)
+	{
+		ivec2 current_uvi = global_uvi + ivec2(i, 0);
+
+		vec4 velocity_sample = texelFetch(velocity_sampler, current_uvi, 0);
+		
+		// If the depth at the potential dominant velocity is 0 (background or skybox)
+		// then it will never go in front of other geometry, and can be skipped.
+		if(velocity_sample.w == 0)
+		{
+			continue;
+		}
+
+		float current_velocity_length_squared = dot(velocity_sample.xy, velocity_sample.xy);
+
+		if(current_velocity_length_squared > max_velocity_length_squared)
+		{
+			max_velocity_length_squared = current_velocity_length_squared;
+
+			max_velocity = ivec4(velocity_sample.xy, 0, 0);
+		}
+	}
+
+	imageStore(tile_max_x, uvi, max_velocity);
+
+#ifdef DEBUG
+	for(int i = 0; i < params.tile_size; i++)
+	{
+		imageStore(debug_5_image, uvi * ivec2(params.tile_size, 1) + ivec2(i, 0), vec4(max_velocity.xy / float(params.tile_size * 2), i == 0 ? 1.0 : 0.0, 0.0));
+	}
+#endif
+}

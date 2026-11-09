@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="15" height="15" viewBox="0 0 15 15"
+     shape-rendering="crispEdges">
+  <title>Minecraft-style crosshair</title>
+  <g fill="#000000">
+    <rect x="6" y="1" width="3" height="13"/>
+    <rect x="1" y="6" width="13" height="3"/>
+  </g>
+  <g fill="#ffffff">
+    <rect x="7" y="2" width="1" height="11"/>
+    <rect x="2" y="7" width="11" height="1"/>
+  </g>
+</svg>

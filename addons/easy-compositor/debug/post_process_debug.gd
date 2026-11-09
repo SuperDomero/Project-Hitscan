@@ -1,0 +1,70 @@
+@tool
+class_name DebugCompositorEffect
+extends EnhancedCompositorEffect
+
+@export_storage var overlay_stage: RDShaderFile = preload("res://addons/easy-compositor/debug/shader_stages/debug_overlay.glsl")
+
+## wether to display debug views for velocity and depth 
+## buffers
+@export var draw_debug: bool = false
+
+## currently 0 - 1, flip between velocity buffers
+## and depth buffers debug views
+@export var debug_page: int = 0
+
+@export var full_screen: bool = false
+
+var past_color: StringName = "past_color"
+
+@export var freeze: bool = false
+
+func _init():
+	context = DEBUG_CONTEXT
+	
+	debug = true
+
+
+func _validate_property(property: Dictionary) -> void:
+	if property.name == "debug":
+		property.usage &= ~PROPERTY_USAGE_EDITOR
+
+
+func _enhanced_render_callback(render_size: Vector2i):
+	var float_push_constants: PackedFloat32Array = []
+	
+	var int_push_constant: PackedInt32Array = [
+		freeze,
+		draw_debug,
+		debug_page,
+		full_screen
+	]
+	
+	var color_image: RID = get_color_texture()
+	
+	# NOTICE @sphynx-owner: initializing the past_color texture to be non-discardable,
+	# so that it's persisted between frames.
+	ensure_texture(
+		past_color,
+		RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT,
+		_current_render_scene_buffers.get_internal_size(),
+		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT | RenderingDevice.TEXTURE_USAGE_STORAGE_BIT,
+		false,
+		false
+	)
+	
+	var past_color_image: RID = get_texture(past_color)
+	
+	begin_compute()
+	
+	dispatch_stage(
+		overlay_stage, 
+		[
+			get_image_uniform(past_color_image, 0),
+			get_image_uniform(color_image, 1),
+			get_sampler_uniform(color_image, 2)
+		],
+		EasyRenderingUtils.get_push_constants(float_push_constants, int_push_constant),
+		EasyRenderingUtils.get_groups_count(Vector3i(render_size.x, render_size.y, 1), DEFAULT_GROUP_SIZE)
+	)
+	
+	end_compute()

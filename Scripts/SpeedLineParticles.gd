@@ -19,6 +19,11 @@ extends GPUParticles3D
 ## push the spawn box further ahead.
 @export var spawn_offset_at_max_speed: float = -3.5
 
+@export_group("Landing")
+## Horizontal speed above which a touchdown locks the particles off until the
+## player slows back down to walk speed. Zero uses the player's walk speed.
+@export var landing_speed_threshold: float = 0.0
+
 @export var camera_holder_path: NodePath = ^"Camera holder"
 
 @onready var _player: PlayerMovement = get_node_or_null(player_path) as PlayerMovement
@@ -28,6 +33,8 @@ var _particle_material: ParticleProcessMaterial = null
 var _base_spawn_offset := 0.0
 var _speed_ratio := 0.0
 var _amount_ratio := 0.0
+var _landing_lock := false
+var _was_on_floor := true
 
 
 func _ready() -> void:
@@ -42,8 +49,35 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_update_landing()
 	_update_orientation()
 	_update_speed(delta)
+
+
+## Locks the particles off on a fast touchdown and releases them once the player
+## has slowed back down to walk speed.
+func _update_landing() -> void:
+	if _player == null:
+		return
+
+	var horizontal_speed := _horizontal_speed()
+	var on_floor := _player.is_on_floor()
+	var threshold := landing_speed_threshold
+	if threshold <= 0.0:
+		threshold = _player.walk_speed
+
+	var was_locked := _landing_lock
+	if on_floor and not _was_on_floor and horizontal_speed > threshold:
+		_landing_lock = true
+	elif _landing_lock and horizontal_speed <= _player.walk_speed:
+		_landing_lock = false
+
+	if _landing_lock and not was_locked:
+		emitting = false
+		restart()
+
+	_was_on_floor = on_floor
+	emitting = not _landing_lock
 
 
 ## Scales the active particle count and spawn offset with speed, using the same
@@ -58,6 +92,8 @@ func _update_speed(delta: float) -> void:
 		target_ratio = clampf(inverse_lerp(min_speed, max_speed, speed), 0.0, 1.0)
 	elif speed >= max_speed:
 		target_ratio = 1.0
+	if _landing_lock:
+		target_ratio = 0.0
 
 	var fade := 1.0 - exp(-fade_speed * delta)
 	_speed_ratio = lerpf(_speed_ratio, target_ratio, fade)
@@ -93,3 +129,7 @@ func _update_orientation() -> void:
 	if absf(direction.dot(up)) > 0.99:
 		up = Vector3.BACK
 	global_basis = Basis.looking_at(direction, up)
+
+
+func _horizontal_speed() -> float:
+	return Vector3(_player.velocity.x, 0.0, _player.velocity.z).length()

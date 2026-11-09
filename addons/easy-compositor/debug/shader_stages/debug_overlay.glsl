@@ -1,0 +1,179 @@
+#[compute]
+#version 450
+
+#define FLT_MAX 3.402823466e+38
+#define FLT_MIN 1.175494351e-38
+#define DBL_MAX 1.7976931348623158e+308
+#define DBL_MIN 2.2250738585072014e-308
+
+#define store_full_screen_image(image, uvi) imageStore(output_color_image, uvi, imageLoad(image, uvi)); imageStore(past_color_image, uvi, imageLoad(image, uvi));
+
+layout(rgba16f, set = 0, binding = 0) uniform image2D past_color_image;
+layout(rgba16f, set = 0, binding = 1) uniform image2D output_color_image;
+layout(set = 0, binding = 2) uniform sampler2D color_sampler;
+// DEBUG_UNIFORMS
+
+layout(push_constant, std430) uniform Params 
+{
+	int freeze;
+	int draw_debug;
+	int debug_page;
+	int full_screen;
+} params;
+
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+void main() 
+{
+	ivec2 render_size = ivec2(textureSize(color_sampler, 0));
+	
+	if (params.draw_debug != 0 && params.freeze == 0 && params.full_screen == 0)
+	{
+		render_size /= 2;
+	}
+
+	ivec2 uvi = ivec2(gl_GlobalInvocationID.xy);
+
+	if ((uvi.x >= render_size.x) || (uvi.y >= render_size.y)) 
+	{
+		return;
+	}
+
+	// show past image for freeze frame
+	if(params.freeze > 0)
+	{
+		imageStore(output_color_image, uvi, imageLoad(past_color_image, uvi));
+		return;
+	}
+
+	// must be on pixel center for whole values (tested)
+	vec2 uvn = vec2(uvi + vec2(0.5)) / render_size;
+
+	if (params.draw_debug == 0) 
+	{
+		vec4 source = textureLod(color_sampler, uvn, 0.0);
+
+		imageStore(output_color_image, uvi, source);
+		imageStore(past_color_image, uvi, source);
+		return;
+	}
+
+	if (params.full_screen > 0)
+	{
+#ifdef DEBUG
+		if(params.debug_page == 0)
+		{
+			store_full_screen_image(debug_1_image, uvi);
+		}
+
+		if(params.debug_page == 1)
+		{
+			store_full_screen_image(debug_2_image, uvi);
+		}
+
+		if(params.debug_page == 2)
+		{
+			store_full_screen_image(debug_3_image, uvi);
+		}
+
+		if(params.debug_page == 3)
+		{
+			store_full_screen_image(debug_4_image, uvi);
+		}
+
+		if(params.debug_page == 4)
+		{
+			store_full_screen_image(debug_5_image, uvi);
+		}
+
+		if(params.debug_page == 5)
+		{
+			store_full_screen_image(debug_6_image, uvi);
+		}
+
+		if(params.debug_page == 6)
+		{
+			store_full_screen_image(debug_7_image, uvi);
+		}
+
+		if(params.debug_page == 7)
+		{
+			store_full_screen_image(debug_8_image, uvi);
+		}
+
+		if(params.debug_page == 8)
+		{
+			store_full_screen_image(debug_9_image, uvi);
+		}
+
+		if(params.debug_page == 9)
+		{
+			store_full_screen_image(debug_10_image, uvi);
+		}
+
+		if(params.debug_page == 10)
+		{
+			store_full_screen_image(debug_11_image, uvi);
+		}
+
+		if(params.debug_page == 11)
+		{
+			store_full_screen_image(debug_12_image, uvi);
+		}
+
+		return;
+#endif
+	}
+
+	vec4 tl_col;
+
+	vec4 tr_col;
+
+	vec4 bl_col;
+
+	vec4 br_col;
+
+#ifdef DEBUG
+	if(params.debug_page == 0)
+	{
+		tl_col = imageLoad(debug_1_image, uvi * 2);
+		tr_col = imageLoad(debug_2_image, uvi * 2);
+		bl_col = imageLoad(debug_3_image, uvi * 2);
+		br_col = imageLoad(debug_4_image, uvi * 2);
+	}
+
+	if(params.debug_page == 1)
+	{
+		tl_col = imageLoad(debug_5_image, uvi * 2);
+		tr_col = imageLoad(debug_6_image, uvi * 2);
+		bl_col = imageLoad(debug_7_image, uvi * 2);
+		br_col = imageLoad(debug_8_image, uvi * 2);
+	}
+
+	if(params.debug_page == 2)
+	{
+		tl_col = imageLoad(debug_9_image, uvi * 2);
+		tr_col = imageLoad(debug_10_image, uvi * 2);
+		bl_col = imageLoad(debug_11_image, uvi * 2);
+		br_col = imageLoad(debug_12_image, uvi * 2);
+	}
+#endif
+
+	ivec2 tl_uvi = uvi + ivec2(vec2(0.0, 0.0) * render_size);
+
+	ivec2 tr_uvi = uvi + ivec2(vec2(1.0, 0.0) * render_size);
+
+	ivec2 bl_uvi = uvi + ivec2(vec2(0.0, 1.0) * render_size);
+
+	ivec2 br_uvi = uvi + ivec2(vec2(1.0, 1.0) * render_size);
+
+	imageStore(output_color_image,  tl_uvi, tl_col);
+	imageStore(output_color_image, tr_uvi, tr_col);
+	imageStore(output_color_image, bl_uvi, bl_col);
+	imageStore(output_color_image, br_uvi, br_col);
+
+	imageStore(past_color_image, tl_uvi, tl_col);
+	imageStore(past_color_image, tr_uvi, tr_col);
+	imageStore(past_color_image, bl_uvi, bl_col);
+	imageStore(past_color_image, br_uvi, br_col);
+}

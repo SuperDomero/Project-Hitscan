@@ -22,7 +22,7 @@ window/size/viewport_height=1080
 window/size/mode=4
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=0
+window/vsync/vsync_mode=2
 
 [editor]
 
@@ -30,7 +30,7 @@ movie_writer/disable_vsync=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/sky_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/easy-compositor/plugin.cfg", "res://addons/godot-motion-blur/plugin.cfg", "res://addons/sky_3d/plugin.cfg")
 
 [input]
 
@@ -77,7 +77,6 @@ lControl={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 viewport/hdr_2d=true
 anti_aliasing/quality/msaa_3d=3

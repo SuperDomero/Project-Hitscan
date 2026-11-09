@@ -10,6 +10,7 @@
 [ext_resource type="ArrayMesh" uid="uid://b4wut0bxhwmrn" path="res://Mesh/player-sunglasses.res" id="6_8erm5"]
 [ext_resource type="Script" uid="uid://boiepggk47t8q" path="res://Scripts/weapon_holder.gd" id="8_f1ek2"]
 [ext_resource type="Script" uid="uid://b2n6v8c1x4m7p" path="res://Scripts/SpeedLineParticles.gd" id="9_slpt"]
+[ext_resource type="Texture2D" uid="uid://64wrdums4sxd" path="res://Textures/crosshair.svg" id="11_gymyn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
 
@@ -38,7 +39,7 @@ alpha_curve = SubResource("CurveTexture_pu2lt")
 [sub_resource type="BoxMesh" id="BoxMesh_gymyn"]
 size = Vector3(0.02, 0.02, 1)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_f1ek2"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_dy670"]
 viewport_path = NodePath("GunViewport")
 
 [node name="Player" type="CharacterBody3D" unique_id=1002749477]
@@ -118,6 +119,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="Crosshair" type="TextureRect" parent="HUD" unique_id=511864265]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_gymyn")
+
 [node name="GunViewport" type="TextureRect" parent="HUD" unique_id=1512034599]
 layout_mode = 1
 anchors_preset = 15
@@ -125,4 +142,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("ViewportTexture_f1ek2")
+texture = SubResource("ViewportTexture_dy670")

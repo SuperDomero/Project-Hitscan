@@ -2,9 +2,39 @@
 
 [ext_resource type="Environment" uid="uid://0bedfafl4v8" path="res://Scenes/defaultEnviroment.tres" id="1_vk57k"]
 [ext_resource type="PackedScene" uid="uid://bw4dk5tdu6gk" path="res://Scenes/player.tscn" id="2_8ffim"]
+[ext_resource type="RDShaderFile" uid="uid://dbt0noaywafgs" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_sphynx_blur.glsl" id="2_uy8f0"]
+[ext_resource type="RDShaderFile" uid="uid://bn88jkvr17x4j" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_neighbor_max.glsl" id="3_6r07y"]
 [ext_resource type="Script" uid="uid://o8m1svubbjme" path="res://Scripts/PlayerMovement.gd" id="3_xfk5q"]
+[ext_resource type="RDShaderFile" uid="uid://i6rnwhmss334" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_overlay.glsl" id="4_6ioyp"]
 [ext_resource type="Material" uid="uid://c5pnyg3g1bdbe" path="res://Materials/green.tres" id="4_7p6j4"]
 [ext_resource type="PackedScene" uid="uid://vqjad2351g1p" path="res://Scenes/muzzle_flash.tscn" id="5_6444e"]
+[ext_resource type="RDShaderFile" uid="uid://bxoh2vy6m4s83" path="res://addons/godot-motion-blur/pre_blur_processing/shader_stages/pre_blur_processor.glsl" id="5_oovug"]
+[ext_resource type="Script" uid="uid://c5jewnyvlca7j" path="res://addons/godot-motion-blur/guertin/guertin_motion_blur.gd" id="6_8i23i"]
+[ext_resource type="RDShaderFile" uid="uid://d0s5upcgm7r6l" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_tile_max_x.glsl" id="7_8yhm2"]
+[ext_resource type="RDShaderFile" uid="uid://ceetvitdbio4l" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_tile_max_y.glsl" id="8_pjppf"]
+
+[sub_resource type="CompositorEffect" id="CompositorEffect_pu2lt"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = true
+needs_normal_roughness = false
+script = ExtResource("6_8i23i")
+multiplier_camera_rotation = 0.3
+multiplier_camera_movement = 0.8
+metadata/_custom_type_script = "uid://c5jewnyvlca7j"
+
+[sub_resource type="Compositor" id="Compositor_gymyn"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_pu2lt")])
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uy8f0"]
+friction = 0.2
+bounce = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_dy670"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6r07y"]
 
 [node name="Level1" type="Node3D" unique_id=1613250008]
 
@@ -15,6 +45,7 @@ light_indirect_energy = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1616471738]
 environment = ExtResource("1_vk57k")
+compositor = SubResource("Compositor_gymyn")
 
 [node name="Player" parent="." unique_id=1002749477 instance=ExtResource("2_8ffim")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -42,3 +73,13 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 3
 light_energy = 10.0
 light_indirect_energy = 0.0
 distance_fade_enabled = true
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1390885436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
+physics_material_override = SubResource("PhysicsMaterial_uy8f0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1374606378]
+mesh = SubResource("BoxMesh_dy670")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=133382673]
+shape = SubResource("BoxShape3D_6r07y")
