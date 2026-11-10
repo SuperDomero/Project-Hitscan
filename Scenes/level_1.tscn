@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://o8m1svubbjme" path="res://Scripts/PlayerMovement.gd" id="3_xfk5q"]
 [ext_resource type="RDShaderFile" uid="uid://i6rnwhmss334" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_overlay.glsl" id="4_6ioyp"]
 [ext_resource type="Material" uid="uid://c5pnyg3g1bdbe" path="res://Materials/green.tres" id="4_7p6j4"]
-[ext_resource type="PackedScene" uid="uid://vqjad2351g1p" path="res://Scenes/muzzle_flash.tscn" id="5_6444e"]
 [ext_resource type="RDShaderFile" uid="uid://bxoh2vy6m4s83" path="res://addons/godot-motion-blur/pre_blur_processing/shader_stages/pre_blur_processor.glsl" id="5_oovug"]
 [ext_resource type="Script" uid="uid://c5jewnyvlca7j" path="res://addons/godot-motion-blur/guertin/guertin_motion_blur.gd" id="6_8i23i"]
 [ext_resource type="RDShaderFile" uid="uid://d0s5upcgm7r6l" path="res://addons/godot-motion-blur/guertin/shader_stages/guertin_tile_max_x.glsl" id="7_8yhm2"]
@@ -33,7 +32,7 @@ compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_pu2l
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uy8f0"]
 friction = 0.2
-bounce = 0.8
+bounce = 2.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_dy670"]
 
@@ -55,6 +54,9 @@ compositor = SubResource("Compositor_gymyn")
 [node name="Player" parent="." unique_id=1002749477 instance=ExtResource("2_8ffim")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 script = ExtResource("3_xfk5q")
+slide_steer_speed = 20.0
+bunny_hop_camera_fov_kick = 10.0
+slide_capsule_height = 0.3
 landing_camera_kick_damping = 12.0
 
 [node name="Level" type="Node3D" parent="." unique_id=552282595]
@@ -78,6 +80,7 @@ distance_fade_enabled = true
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1390885436]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
+mass = 3.0
 physics_material_override = SubResource("PhysicsMaterial_uy8f0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1374606378]
@@ -85,6 +88,3 @@ mesh = SubResource("BoxMesh_dy670")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=133382673]
 shape = SubResource("BoxShape3D_6r07y")
-
-[node name="MuzzleFlash" parent="RigidBody3D" unique_id=1939074207 instance=ExtResource("5_6444e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)

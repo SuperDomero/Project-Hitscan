@@ -1,3 +1,4 @@
+class_name WeaponHolder
 extends Node3D
 
 enum WalkState {
@@ -36,6 +37,24 @@ enum WalkState {
 ## How quickly the sway follows the look direction and settles back to rest.
 @export var sway_smoothing: float = 12.0
 
+@export_group("Equip Pose")
+## Local offset at the start of the procedural equip animation.
+@export var equip_position_offset: Vector3 = Vector3(0.0, -0.25, -0.12)
+## Local rotation in degrees at the start of the procedural equip animation.
+@export var equip_rotation_degrees: Vector3 = Vector3(-35.0, 10.0, 15.0)
+## Blend units per second the equip pose settles at.
+@export var equip_speed: float = 3.5
+## Equip amount below which the weapon counts as raised and fire is allowed.
+@export var equip_fire_threshold: float = 0.1
+
+@export_group("Empty Pose")
+## Local offset held while the active weapon is reloading.
+@export var empty_position_offset: Vector3 = Vector3(0.0, -0.10, 0.05)
+## Local rotation in degrees held while the active weapon is reloading.
+@export var empty_rotation_degrees: Vector3 = Vector3(10.0, -18.0, -25.0)
+## Blend units per second the empty pose fades in and out at.
+@export var empty_blend_speed: float = 10.0
+
 @export_group("State Poses")
 ## Horizontal speed above which a touchdown enters the landing state, and below
 ## which the landing state ends and bobbing resumes.
@@ -55,8 +74,10 @@ enum WalkState {
 
 @export var player_path: NodePath = ^"../.."
 @export var camera_holder_path: NodePath = ^"Camera holder"
+@export var weapon_manager_path: NodePath = ^"WeaponManager"
 
 @onready var _player: PlayerMovement = get_node_or_null(player_path) as PlayerMovement
+@onready var _weapon_manager: Node = get_node_or_null(weapon_manager_path)
 
 var _resting_position := Vector3.ZERO
 var _resting_rotation := Vector3.ZERO
@@ -72,9 +93,12 @@ var _last_yaw := 0.0
 var _last_pitch := 0.0
 var _sway_position := Vector3.ZERO
 var _sway_rotation := Vector3.ZERO
+var _equip_amount := 0.0
+var _empty_amount := 0.0
 
 
 func _ready() -> void:
+	process_priority = 2
 	_resting_position = position
 	_resting_rotation = rotation_degrees
 	if _player != null:
@@ -148,10 +172,51 @@ func _process(delta: float) -> void:
 	var bob_rotation := Vector3(0.0, 0.0, sin(phase) * roll_amplitude_degrees)
 
 	_update_sway(delta)
+	_update_equip_pose(delta)
+	_update_empty_pose(delta)
+
+	var empty_weight := _empty_amount * (1.0 - _equip_amount)
 	_apply_pose(
-		_state_position + bob_position * _walk_blend + _sway_position,
+		_state_position + bob_position * _walk_blend + _sway_position
+			+ equip_position_offset * _equip_amount
+			+ empty_position_offset * empty_weight,
 		_state_rotation + bob_rotation * _walk_blend + _sway_rotation
+			+ equip_rotation_degrees * _equip_amount
+			+ empty_rotation_degrees * empty_weight
 	)
+
+
+## Starts the procedural raise when a new weapon is equipped.
+func play_equip() -> void:
+	_equip_amount = 1.0
+
+
+func is_equip_fire_ready() -> bool:
+	return _equip_amount <= equip_fire_threshold
+
+
+## Fire is blocked while sliding or while recovering from a fast landing.
+func is_fire_allowed() -> bool:
+	return (
+		_walk_state != WalkState.sliding
+		and _walk_state != WalkState.landing
+	)
+
+
+func _update_equip_pose(delta: float) -> void:
+	_equip_amount = move_toward(_equip_amount, 0.0, equip_speed * delta)
+
+
+func _update_empty_pose(delta: float) -> void:
+	var target := 1.0 if _active_weapon_reloading() else 0.0
+	_empty_amount = move_toward(_empty_amount, target, empty_blend_speed * delta)
+
+
+func _active_weapon_reloading() -> bool:
+	if _weapon_manager == null:
+		return false
+	var weapon := _weapon_manager.get("active_weapon") as Weapon
+	return weapon != null and weapon.is_reloading
 
 
 ## Turns the per-frame look rotation into a lagging viewmodel sway.

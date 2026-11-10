@@ -1,8 +1,29 @@
 [gd_scene format=3 uid="uid://c4etiapg7bomd"]
 
 [ext_resource type="PackedScene" uid="uid://cxfax0h654gib" path="res://Assets/pistol.glb" id="1_j1qo2"]
+[ext_resource type="Script" uid="uid://byoutvlpurc05" path="res://Scripts/Weapon.gd" id="2_weapon"]
+[ext_resource type="PackedScene" uid="uid://vqjad2351g1p" path="res://Scenes/muzzle_flash.tscn" id="3_muzzle"]
+[ext_resource type="AudioStream" uid="uid://da6qbhigipqw6" path="res://Sounds/pistol_fire.mp3" id="4_fire_snd"]
+[ext_resource type="AudioStream" uid="uid://ck4lv76em1mo8" path="res://Sounds/dry_fire.mp3" id="5_dry_snd"]
+[ext_resource type="Script" uid="uid://btfem0jdqai7q" path="res://Scripts/WeaponSounds.gd" id="6_sounds"]
 
 [node name="pistol" unique_id=554717265 instance=ExtResource("1_j1qo2")]
+script = ExtResource("2_weapon")
+clip_size = 12
+animation_speed = 2.0
+recoil_vertical_degrees = 10.0
+recoil_horizontal_degrees = 6.0
+recoil_return_time = 0.5
 
-[node name="Object_2" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(75102095) index="0" unique_id=2017525434]
+[node name="Object_2" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(349295727) index="0" unique_id=300512495]
 layers = 4
+
+[node name="Muzzle" type="Marker3D" parent="." index="3" unique_id=903360129]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0.139, -0.5207902)
+
+[node name="MuzzleFlash" parent="Muzzle" index="0" unique_id=1711412234 instance=ExtResource("3_muzzle")]
+
+[node name="WeaponSounds" type="Node" parent="." index="4" unique_id=157068841]
+script = ExtResource("6_sounds")
+fire_stream = ExtResource("4_fire_snd")
+dry_fire_stream = ExtResource("5_dry_snd")

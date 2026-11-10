@@ -467,6 +467,8 @@ func _push_rigid_bodies(move_velocity: Vector3) -> void:
 
 
 func _log_inputs(delta: float) -> void:
+	if not OS.is_debug_build():
+		return
 	_input_log_accumulator += delta
 	if _input_log_accumulator < INPUT_LOG_INTERVAL:
 		return

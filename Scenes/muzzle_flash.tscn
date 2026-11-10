@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bctxe4yp6ramm" path="res://Assets/textures/muzzle-flash.png" id="1_xbt7w"]
 [ext_resource type="ArrayMesh" uid="uid://cqcerm7d5sw3u" path="res://Mesh/muzzle-planes.res" id="2_2ugjg"]
+[ext_resource type="Script" uid="uid://d4amgv4ut0424" path="res://Scripts/MuzzleFlash.gd" id="3_muzzle"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dy670"]
 transparency = 1
@@ -40,11 +41,15 @@ color = Color(1, 0.8352941, 0.42745098, 1)
 alpha_curve = SubResource("CurveTexture_xbt7w")
 
 [node name="MuzzleFlash" type="Node3D" unique_id=1939074207]
+script = ExtResource("3_muzzle")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1889615160]
+layers = 4
 material_override = SubResource("StandardMaterial3D_dy670")
+emitting = false
 amount = 1
 lifetime = 0.1
+one_shot = true
 randomness = 1.0
 use_fixed_seed = true
 seed = 2461711721

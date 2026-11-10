@@ -11,6 +11,9 @@
 [ext_resource type="Script" uid="uid://boiepggk47t8q" path="res://Scripts/weapon_holder.gd" id="8_f1ek2"]
 [ext_resource type="Script" uid="uid://b2n6v8c1x4m7p" path="res://Scripts/SpeedLineParticles.gd" id="9_slpt"]
 [ext_resource type="Texture2D" uid="uid://64wrdums4sxd" path="res://Textures/crosshair.svg" id="11_gymyn"]
+[ext_resource type="Script" uid="uid://xw0ass5gckxw" path="res://Scripts/WeaponManager.gd" id="12_wmgr"]
+[ext_resource type="Script" uid="uid://dibbu87vsu6cn" path="res://Scripts/WeaponHUD.gd" id="13_whud"]
+[ext_resource type="Script" uid="uid://hgkckce5s4vn" path="res://Scripts/CameraRecoil.gd" id="14_recoil"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dy670"]
 
@@ -52,8 +55,11 @@ debug_color = Color(0.9490196, 0, 0.58431375, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 script = ExtResource("3_plk01")
 
-[node name="Camera3D" type="Camera3D" parent="Camera holder" unique_id=649427327]
-cull_mask = 1048573
+[node name="RecoilPivot" type="Node3D" parent="Camera holder" unique_id=1218514723]
+script = ExtResource("14_recoil")
+
+[node name="Camera3D" type="Camera3D" parent="Camera holder/RecoilPivot" unique_id=649427327]
+cull_mask = 1048569
 
 [node name="AudioListener3D" type="AudioListener3D" parent="Camera holder" unique_id=285513183]
 doppler_tracking = 2
@@ -64,7 +70,7 @@ material_override = SubResource("StandardMaterial3D_gymyn")
 emitting = false
 amount = 12
 lifetime = 0.3
-fixed_fps = 240
+fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_pu2lt")
 draw_pass_1 = SubResource("BoxMesh_gymyn")
 script = ExtResource("9_slpt")
@@ -99,13 +105,15 @@ mesh = ExtResource("6_8erm5")
 
 [node name="GunViewport" type="SubViewport" parent="." unique_id=225503241]
 transparent_bg = true
-size = Vector2i(1280, 720)
+size = Vector2i(960, 540)
 
 [node name="WeaponHolder" type="Node3D" parent="GunViewport" unique_id=1907352804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.3, -0.5)
 script = ExtResource("8_f1ek2")
 
-[node name="pistol" parent="GunViewport/WeaponHolder" unique_id=554717265 instance=ExtResource("2_8erm5")]
+[node name="WeaponManager" type="Node" parent="GunViewport/WeaponHolder" unique_id=1135227648]
+script = ExtResource("12_wmgr")
+weapon_scenes = Array[PackedScene]([ExtResource("2_8erm5")])
 
 [node name="Camera3D" type="Camera3D" parent="GunViewport" unique_id=1447205609]
 cull_mask = 1047556
@@ -135,6 +143,20 @@ offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_gymyn")
+
+[node name="Ammo" type="Label" parent="HUD" unique_id=1038478512]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = -76.0
+offset_right = 300.0
+offset_bottom = -24.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "8 / 8"
+script = ExtResource("13_whud")
 
 [node name="GunViewport" type="TextureRect" parent="HUD" unique_id=1512034599]
 layout_mode = 1
