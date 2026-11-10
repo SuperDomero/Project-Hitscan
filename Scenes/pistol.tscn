@@ -11,9 +11,9 @@
 script = ExtResource("2_weapon")
 clip_size = 12
 animation_speed = 2.0
-recoil_vertical_degrees = 10.0
-recoil_horizontal_degrees = 6.0
-recoil_return_time = 0.5
+recoil_vertical_degrees = 15.0
+recoil_horizontal_degrees = 10.0
+recoil_return_time = 0.3
 
 [node name="Object_2" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(349295727) index="0" unique_id=300512495]
 layers = 4

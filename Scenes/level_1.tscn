@@ -53,6 +53,7 @@ compositor = SubResource("Compositor_gymyn")
 
 [node name="Player" parent="." unique_id=1002749477 instance=ExtResource("2_8ffim")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+platform_on_leave = 2
 script = ExtResource("3_xfk5q")
 slide_steer_speed = 20.0
 bunny_hop_camera_fov_kick = 10.0
@@ -78,13 +79,59 @@ light_energy = 10.0
 light_indirect_energy = 0.0
 distance_fade_enabled = true
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1390885436]
+[node name="Rigid Bodies" type="Node3D" parent="." unique_id=397209461]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Rigid Bodies" unique_id=1390885436]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
 mass = 3.0
 physics_material_override = SubResource("PhysicsMaterial_uy8f0")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1374606378]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Rigid Bodies/RigidBody3D" unique_id=1374606378]
 mesh = SubResource("BoxMesh_dy670")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=133382673]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rigid Bodies/RigidBody3D" unique_id=133382673]
+shape = SubResource("BoxShape3D_6r07y")
+
+[node name="RigidBody3D2" type="RigidBody3D" parent="Rigid Bodies" unique_id=1893349732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_uy8f0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Rigid Bodies/RigidBody3D2" unique_id=2033425824]
+mesh = SubResource("BoxMesh_dy670")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rigid Bodies/RigidBody3D2" unique_id=31267523]
+shape = SubResource("BoxShape3D_6r07y")
+
+[node name="RigidBody3D3" type="RigidBody3D" parent="Rigid Bodies" unique_id=1542415597]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_uy8f0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Rigid Bodies/RigidBody3D3" unique_id=1982720280]
+mesh = SubResource("BoxMesh_dy670")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rigid Bodies/RigidBody3D3" unique_id=793050278]
+shape = SubResource("BoxShape3D_6r07y")
+
+[node name="RigidBody3D4" type="RigidBody3D" parent="Rigid Bodies" unique_id=1455793634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_uy8f0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Rigid Bodies/RigidBody3D4" unique_id=1472293500]
+mesh = SubResource("BoxMesh_dy670")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rigid Bodies/RigidBody3D4" unique_id=1520693122]
+shape = SubResource("BoxShape3D_6r07y")
+
+[node name="RigidBody3D5" type="RigidBody3D" parent="Rigid Bodies" unique_id=597134623]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_uy8f0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Rigid Bodies/RigidBody3D5" unique_id=1746413427]
+mesh = SubResource("BoxMesh_dy670")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rigid Bodies/RigidBody3D5" unique_id=1169122951]
 shape = SubResource("BoxShape3D_6r07y")
