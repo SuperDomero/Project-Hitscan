@@ -106,6 +106,8 @@ mesh = ExtResource("6_8erm5")
 [node name="GunViewport" type="SubViewport" parent="." unique_id=225503241]
 transparent_bg = true
 size = Vector2i(1920, 1080)
+scaling_3d_mode = 0
+scaling_3d_scale = 1.0
 
 [node name="WeaponHolder" type="Node3D" parent="GunViewport" unique_id=1907352804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.3, -0.5)

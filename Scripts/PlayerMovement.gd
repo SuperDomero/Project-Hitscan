@@ -68,6 +68,9 @@ var slide_pose: float:
 @export var push_max_impulse: float = 15.0
 ## Bodies heavier than this are not pushed, 0.0 pushes any mass.
 @export var push_max_mass: float = 0.0
+## Bodies lighter than this neither slow the player nor bend its path on impact.
+## 0.0 lets every body block.
+@export var push_ignore_mass: float = 5.0
 
 @export_group("Slide Pose")
 ## Height of the collision pill while sliding, also used to sink the body.
@@ -152,6 +155,7 @@ func _physics_process(delta: float) -> void:
 	var move_velocity := velocity
 	move_and_slide()
 	_push_rigid_bodies(move_velocity)
+	_keep_momentum_through_light_bodies(move_velocity)
 	_update_landing()
 	_update_landing_camera(delta)
 	_apply_camera_roll()
@@ -464,6 +468,44 @@ func _push_rigid_bodies(move_velocity: Vector3) -> void:
 			-normal * impulse,
 			collision.get_position() - body.global_position
 		)
+
+
+## Restores the horizontal velocity move_and_slide removed on impact with bodies
+## lighter than push_ignore_mass, so they are shoved aside instead of stopping
+## the player or bending its path.
+func _keep_momentum_through_light_bodies(move_velocity: Vector3) -> void:
+	if push_ignore_mass <= 0.0:
+		return
+
+	var horizontal := Vector3(move_velocity.x, 0.0, move_velocity.z)
+	if horizontal.is_zero_approx():
+		return
+
+	var restored := _horizontal_velocity()
+	var changed := false
+	for index in get_slide_collision_count():
+		var collision := get_slide_collision(index)
+		var body := collision.get_collider() as RigidBody3D
+		if body == null or body.freeze or body.mass >= push_ignore_mass:
+			continue
+		if push_max_mass > 0.0 and body.mass > push_max_mass:
+			continue
+
+		var normal := collision.get_normal()
+		normal.y = 0.0
+		if normal.is_zero_approx():
+			continue
+		normal = normal.normalized()
+
+		var removed := -horizontal.dot(normal)
+		if removed <= 0.0:
+			continue
+
+		restored -= normal * removed
+		changed = true
+
+	if changed:
+		_set_horizontal_velocity(restored)
 
 
 func _log_inputs(delta: float) -> void:

@@ -24,15 +24,15 @@ needs_normal_roughness = false
 script = ExtResource("6_8i23i")
 multiplier_camera_rotation = 0.3
 multiplier_camera_movement = 0.8
-activation_threshold = 0.5
+activation_threshold = 1.0
 metadata/_custom_type_script = "uid://c5jewnyvlca7j"
 
 [sub_resource type="Compositor" id="Compositor_gymyn"]
 compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_pu2lt")])
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uy8f0"]
-friction = 0.2
-bounce = 2.0
+friction = 0.8
+bounce = 0.1
 
 [sub_resource type="BoxMesh" id="BoxMesh_dy670"]
 
@@ -57,7 +57,9 @@ platform_on_leave = 2
 script = ExtResource("3_xfk5q")
 slide_steer_speed = 20.0
 bunny_hop_camera_fov_kick = 10.0
+push_ignore_mass = 1.0
 slide_capsule_height = 0.3
+slide_camera_roll_degrees = 15.0
 landing_camera_kick_damping = 12.0
 
 [node name="Level" type="Node3D" parent="." unique_id=552282595]
@@ -83,7 +85,7 @@ distance_fade_enabled = true
 
 [node name="RigidBody3D" type="RigidBody3D" parent="Rigid Bodies" unique_id=1390885436]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3869877, -5.319239)
-mass = 3.0
+mass = 0.9
 physics_material_override = SubResource("PhysicsMaterial_uy8f0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Rigid Bodies/RigidBody3D" unique_id=1374606378]
